@@ -1,0 +1,12 @@
+.mode-selector { display: flex; gap: 6px; }
+.mode-btn {
+  background: transparent; border: 1px solid #0d2a3e; color: #4a7a8a;
+  padding: 5px 12px; border-radius: 4px; font-size: 10px;
+  letter-spacing: 2px; cursor: pointer; font-family: 'Courier New', monospace;
+  transition: all 0.2s ease;
+}
+.mode-btn:hover { border-color: #00e5ff; color: #00e5ff; }
+.mode-btn.active {
+  background: #7b2fff; border-color: #7b2fff;
+  color: #fff; box-shadow: 0 0 10px rgba(123,47,255,0.4);
+}

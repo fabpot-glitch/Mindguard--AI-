@@ -1,0 +1,9 @@
+.radar-card { background: #071828; border: 1px solid #0d2a3e; border-radius: 8px; padding: 20px 24px; }
+.radar-label { font-size: 9px; letter-spacing: 3px; color: #4a7a8a; text-transform: uppercase; margin-bottom: 4px; }
+.radar-sub   { font-size: 10px; color: #4a7a8a; margin-bottom: 12px; }
+.radar-scores { margin-top: 12px; }
+.radar-score-row { display: flex; align-items: center; gap: 8px; padding: 4px 0; border-bottom: 1px solid #0d2a3e; }
+.radar-score-label { font-size: 10px; color: #4a7a8a; width: 50px; flex-shrink: 0; }
+.radar-score-bar   { flex: 1; height: 3px; background: #0d2a3e; border-radius: 2px; overflow: hidden; }
+.radar-score-fill  { height: 100%; background: #00e5ff; border-radius: 2px; transition: width 0.5s ease; }
+.radar-score-val   { font-size: 10px; color: #00ffa3; width: 32px; text-align: right; flex-shrink: 0; }

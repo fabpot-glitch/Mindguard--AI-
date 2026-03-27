@@ -1,0 +1,17 @@
+.signal-card { background: #071828; border: 1px solid #0d2a3e; border-radius: 8px; padding: 20px 24px; }
+.sig-label { font-size: 9px; letter-spacing: 3px; color: #4a7a8a; text-transform: uppercase; margin-bottom: 4px; }
+.sig-sub   { font-size: 10px; color: #4a7a8a; margin-bottom: 16px; }
+.sig-list  { display: flex; flex-direction: column; gap: 12px; }
+.sig-row   { display: flex; align-items: center; gap: 10px; }
+.sig-dot   { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+.sig-dot.active { background: #00ffa3; box-shadow: 0 0 6px #00ffa3; animation: blink 2s infinite; }
+.sig-dot.idle   { background: #4a7a8a; }
+.sig-name   { flex: 1; font-size: 11px; color: #c8e8f0; }
+.sig-status { font-size: 9px; letter-spacing: 1px; flex-shrink: 0; }
+.sig-status.active { color: #00ffa3; }
+.sig-status.idle   { color: #4a7a8a; }
+.sig-bar       { width: 50px; height: 3px; background: #0d2a3e; border-radius: 2px; overflow: hidden; }
+.sig-bar-fill  { height: 100%; background: #00ffa3; transition: width 0.5s ease; }
+.sig-footer    { margin-top: 16px; padding-top: 12px; border-top: 1px solid #0d2a3e; }
+.sig-privacy   { font-size: 10px; color: #4a7a8a; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.4} }

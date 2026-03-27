@@ -1,0 +1,8 @@
+.alertlog-card { background: #071828; border: 1px solid #0d2a3e; border-radius: 8px; padding: 20px 24px; }
+.al-label { font-size: 9px; letter-spacing: 3px; color: #4a7a8a; text-transform: uppercase; margin-bottom: 4px; }
+.al-count { font-size: 10px; color: #4a7a8a; margin-bottom: 14px; }
+.al-list  { display: flex; flex-direction: column; gap: 8px; max-height: 220px; overflow-y: auto; }
+.al-empty { font-size: 11px; color: #4a7a8a; padding: 8px 0; }
+.al-item  { padding: 8px 12px; background: #040d14; border-radius: 4px; }
+.al-msg   { font-size: 11px; color: #c8e8f0; margin-bottom: 4px; }
+.al-time  { font-size: 9px; color: #4a7a8a; }

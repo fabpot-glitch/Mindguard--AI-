@@ -1,0 +1,15 @@
+.gauge-card {
+  background: #071828; border: 1px solid #0d2a3e; border-radius: 8px;
+  padding: 20px 24px; transition: border-color 0.2s;
+}
+.gauge-card:hover { border-color: #1a3a55; }
+.gauge-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
+.gauge-label { font-size: 9px; letter-spacing: 3px; color: #4a7a8a; text-transform: uppercase; margin-bottom: 4px; }
+.gauge-desc  { font-size: 10px; color: #4a7a8a; }
+.gauge-icon  { font-size: 24px; }
+.gauge-value-row { display: flex; align-items: flex-end; gap: 8px; margin-bottom: 10px; }
+.gauge-value { font-size: 48px; font-weight: bold; line-height: 1; font-family: 'Courier New', monospace; transition: color 0.5s; }
+.gauge-max   { font-size: 12px; color: #4a7a8a; margin-bottom: 10px; }
+.gauge-track { height: 4px; background: #0d2a3e; border-radius: 2px; overflow: hidden; margin-bottom: 8px; }
+.gauge-fill  { height: 100%; border-radius: 2px; transition: width 0.5s ease, background 0.5s; }
+.gauge-status { font-size: 10px; letter-spacing: 1px; }

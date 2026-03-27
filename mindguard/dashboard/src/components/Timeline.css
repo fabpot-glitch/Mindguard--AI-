@@ -1,0 +1,10 @@
+.timeline-card {
+  background: #071828; border: 1px solid #0d2a3e; border-radius: 8px; padding: 20px 24px;
+  grid-column: span 2;
+}
+.timeline-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; }
+.tl-label { font-size: 9px; letter-spacing: 3px; color: #4a7a8a; text-transform: uppercase; margin-bottom: 4px; }
+.tl-sub   { font-size: 10px; color: #4a7a8a; }
+.tl-legend { display: flex; gap: 16px; flex-wrap: wrap; }
+.tl-legend-item { display: flex; align-items: center; gap: 6px; font-size: 10px; color: #4a7a8a; }
+.tl-legend-dot  { width: 14px; height: 2px; border-radius: 1px; }

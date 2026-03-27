@@ -1,0 +1,160 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mindguard-config
+  namespace: mindguard
+data:
+  # Application Configuration
+  API_HOST: "0.0.0.0"
+  API_PORT: "8000"
+  API_WORKERS: "4"
+  API_DEBUG: "false"
+  LOG_LEVEL: "INFO"
+  LOG_FORMAT: "json"
+  MODEL_DEVICE: "cpu"
+  MODEL_INFERENCE_FREQUENCY: "5"
+  ENABLE_VOICE_ANALYSIS: "false"
+  ENABLE_SCREEN_MONITORING: "true"
+  PRIVACY_MODE: "true"
+  
+  # Redis Configuration
+  REDIS_HOST: "mindguard-redis"
+  REDIS_PORT: "6379"
+  REDIS_DB: "0"
+  
+  # PostgreSQL Configuration
+  POSTGRES_HOST: "mindguard-postgres"
+  POSTGRES_PORT: "5432"
+  POSTGRES_DB: "mindguard"
+  
+  # Model Configuration
+  MODEL_CONFIDENCE_THRESHOLD: "0.7"
+  MODEL_BATCH_SIZE: "32"
+  
+  # Thresholds
+  FATIGUE_HIGH_THRESHOLD: "0.8"
+  FATIGUE_CRITICAL_THRESHOLD: "0.9"
+  STRESS_HIGH_THRESHOLD: "0.75"
+  ATTENTION_LOW_THRESHOLD: "0.3"
+  COGNITIVE_LOAD_HIGH_THRESHOLD: "0.85"
+  
+  # Intervention Settings
+  INTERVENTION_COOLDOWN: "120"
+  MAX_INTERVENTIONS_PER_HOUR: "5"
+  
+  # Monitoring
+  ENABLE_METRICS: "true"
+  PROMETHEUS_PORT: "9090"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mindguard-nginx-config
+  namespace: mindguard
+data:
+  default.conf: |
+    server {
+        listen 80;
+        server_name _;
+        
+        root /usr/share/nginx/html;
+        index index.html;
+        
+        # Security headers
+        add_header X-Frame-Options "SAMEORIGIN" always;
+        add_header X-Content-Type-Options "nosniff" always;
+        add_header X-XSS-Protection "1; mode=block" always;
+        add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+        
+        # Gzip compression
+        gzip on;
+        gzip_vary on;
+        gzip_min_length 1024;
+        gzip_types text/plain text/css text/xml text/javascript application/javascript application/xml+rss application/json;
+        
+        location / {
+            try_files $uri $uri/ /index.html;
+            expires 1h;
+            add_header Cache-Control "public, immutable";
+        }
+        
+        location /static {
+            expires 1y;
+            add_header Cache-Control "public, immutable";
+        }
+        
+        location /api {
+            proxy_pass http://mindguard-backend:8000;
+            proxy_http_version 1.1;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection 'upgrade';
+            proxy_set_header Host $host;
+            proxy_cache_bypass $http_upgrade;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+            
+            # Timeouts
+            proxy_connect_timeout 60s;
+            proxy_send_timeout 60s;
+            proxy_read_timeout 60s;
+        }
+        
+        location /ws {
+            proxy_pass http://mindguard-backend:8000;
+            proxy_http_version 1.1;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection "upgrade";
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            
+            # WebSocket timeouts
+            proxy_read_timeout 3600s;
+            proxy_send_timeout 3600s;
+        }
+        
+        # Health check endpoint
+        location /health {
+            access_log off;
+            return 200 "healthy\n";
+            add_header Content-Type text/plain;
+        }
+    }
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mindguard-prometheus-config
+  namespace: mindguard
+data:
+  prometheus.yml: |
+    global:
+      scrape_interval: 15s
+      evaluation_interval: 15s
+      
+    scrape_configs:
+      - job_name: 'mindguard-backend'
+        kubernetes_sd_configs:
+          - role: pod
+        relabel_configs:
+          - source_labels: [__meta_kubernetes_pod_label_app]
+            action: keep
+            regex: mindguard
+          - source_labels: [__meta_kubernetes_pod_label_component]
+            action: keep
+            regex: backend
+          - source_labels: [__meta_kubernetes_pod_container_port_name]
+            action: keep
+            regex: metrics
+          - source_labels: [__address__, __meta_kubernetes_pod_container_port_number]
+            action: replace
+            regex: (.+):(?:\d+);(\d+)
+            replacement: ${1}:${2}
+            target_label: __address__
+          - source_labels: [__meta_kubernetes_pod_name]
+            action: replace
+            target_label: pod
+          - source_labels: [__meta_kubernetes_namespace]
+            action: replace
+            target_label: namespace

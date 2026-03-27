@@ -1,0 +1,25 @@
+.breathing-overlay {
+  position: fixed; inset: 0; background: rgba(4,13,20,0.95);
+  z-index: 999; display: flex; align-items: center; justify-content: center;
+  animation: fadeIn 0.4s ease;
+}
+.breathing-box { text-align: center; padding: 48px; }
+.breath-title  { font-size: 13px; letter-spacing: 4px; color: #00e5ff; margin-bottom: 6px; }
+.breath-sub    { font-size: 11px; color: #4a7a8a; margin-bottom: 40px; }
+.breath-circle-wrap { position: relative; display: flex; align-items: center; justify-content: center; margin-bottom: 32px; }
+.breath-circle {
+  width: 160px; height: 160px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(0,229,255,0.25), rgba(123,47,255,0.1));
+  border: 2px solid rgba(0,229,255,0.5); box-shadow: 0 0 40px rgba(0,229,255,0.2);
+}
+.breath-phase { position: absolute; font-size: 18px; font-weight: bold; color: #c8e8f0; letter-spacing: 2px; }
+.breath-count { position: absolute; bottom: 50px; font-size: 13px; color: #4a7a8a; }
+.breath-instruction { font-size: 13px; color: #4a7a8a; margin-bottom: 32px; line-height: 1.6; max-width: 280px; margin-left: auto; margin-right: auto; }
+.breath-skip {
+  background: transparent; border: 1px solid #0d2a3e;
+  color: #4a7a8a; padding: 8px 24px; border-radius: 4px;
+  font-size: 11px; cursor: pointer; font-family: 'Courier New', monospace;
+  transition: all 0.2s;
+}
+.breath-skip:hover { border-color: #4a7a8a; color: #c8e8f0; }
+@keyframes fadeIn { from{opacity:0} to{opacity:1} }

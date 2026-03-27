@@ -1,0 +1,96 @@
+# ╔══════════════════════════════════════════════════════════╗
+# ║  MINDGUARD AI — requirements.txt                        ║
+# ║  Fixed for Python 3.12 + Windows                        ║
+# ╚══════════════════════════════════════════════════════════╝
+
+# ─────────────────────────────────────────
+# 1. API AND WEB FRAMEWORK
+# ─────────────────────────────────────────
+fastapi==0.111.0                # FIXED: 0.104.1 has pydantic v1 conflicts
+uvicorn[standard]==0.29.0       # FIXED: 0.24.0 outdated
+websockets==12.0                # OK
+python-multipart==0.0.9         # FIXED: 0.0.6 has security issues
+
+# ─────────────────────────────────────────
+# 2. COMPUTER VISION
+# ─────────────────────────────────────────
+opencv-python==4.9.0.80         # FIXED: 4.8.1.78 missing wheels for Py3.12
+mediapipe==0.10.14              # FIXED: 0.10.7 does not exist for Py3.12
+deepface==0.0.93                # FIXED: 0.0.79 broken on newer numpy
+# face-recognition              # REMOVED: needs dlib — impossible to install
+#                                  on Windows without Visual C++ Build Tools
+#                                  Use deepface instead (does same thing)
+Pillow==10.3.0                  # ADDED: required by deepface + opencv
+
+# ─────────────────────────────────────────
+# 3. DEEP LEARNING
+# ─────────────────────────────────────────
+torch==2.3.0                    # FIXED: 2.1.0 has no Py3.12 wheels on Windows
+torchvision==0.18.0             # FIXED: must match torch version
+transformers==4.41.0            # FIXED: 4.35.0 outdated
+onnx==1.16.0                    # FIXED: 1.15.0 incompatible with Py3.12
+onnxruntime==1.18.0             # FIXED: 1.16.1 incompatible with Py3.12
+
+# ─────────────────────────────────────────
+# 4. AUDIO PROCESSING
+# ─────────────────────────────────────────
+librosa==0.10.2                 # FIXED: 0.10.1 broken with new numpy
+sounddevice==0.4.7              # FIXED: 0.4.6 missing Py3.12 wheels
+soundfile==0.12.1               # ADDED: required by librosa on Windows
+pydub==0.25.1                   # OK
+noisereduce==3.0.0              # OK
+
+# ─────────────────────────────────────────
+# 5. INPUT MONITORING
+# ─────────────────────────────────────────
+pynput==1.7.6                   # OK — works without admin rights
+# keyboard==0.13.5              # REMOVED: requires admin/root on Windows
+# mouse==0.7.1                  # REMOVED: requires admin/root on Windows
+#                                  pynput handles both keyboard + mouse safely
+psutil==5.9.8                   # ADDED: screen/process monitoring replacement
+
+# ─────────────────────────────────────────
+# 6. DATA PROCESSING
+# ─────────────────────────────────────────
+numpy==1.26.4                   # FIXED: 1.24.3 broken on Py3.12
+pandas==2.2.2                   # FIXED: 2.1.3 has numpy conflicts
+scipy==1.13.0                   # FIXED: 1.11.4 broken on Py3.12
+scikit-learn==1.5.0             # FIXED: 1.3.2 broken on Py3.12
+h5py==3.11.0                    # ADDED: needed to read DEAP dataset
+joblib==1.4.2                   # ADDED: parallel processing for training
+
+# ─────────────────────────────────────────
+# 7. PRIVACY AND SECURITY
+# ─────────────────────────────────────────
+cryptography==42.0.8            # FIXED: 41.0.7 has known CVEs
+python-jose[cryptography]==3.3.0 # OK
+passlib[bcrypt]==1.7.4          # OK
+# pysyft==0.8.3                 # REMOVED: 500MB+ install, breaks on Windows
+#                                  Use standard Python privacy patterns instead
+
+# ─────────────────────────────────────────
+# 8. LOGGING AND MONITORING
+# ─────────────────────────────────────────
+loguru==0.7.2                   # OK
+prometheus-client==0.20.0       # FIXED: 0.19.0 outdated
+python-json-logger==2.0.7       # OK
+
+# ─────────────────────────────────────────
+# 9. DATABASE
+# ─────────────────────────────────────────
+sqlalchemy==2.0.30              # FIXED: 2.0.23 has bugs with Py3.12
+alembic==1.13.1                 # FIXED: 1.12.1 has sqlalchemy conflicts
+redis==5.0.4                    # FIXED: 5.0.1 minor bug fixes
+aiofiles==23.2.1                # ADDED: async file operations
+
+# ─────────────────────────────────────────
+# 10. UTILITIES
+# ─────────────────────────────────────────
+python-dotenv==1.0.1            # FIXED: 1.0.0 → 1.0.1
+pydantic[email]==2.7.1          # FIXED: 2.5.0 has validation bugs
+pydantic-settings==2.3.0        # ADDED: required for .env loading
+click==8.1.7                    # OK
+tqdm==4.66.4                    # FIXED: 4.66.1 outdated
+pyyaml==6.0.1                   # OK
+rich==13.7.1                    # ADDED: pretty terminal output
+python-dateutil==2.9.0          # ADDED: date utilities

@@ -1,0 +1,7 @@
+.prediction-card { background: #071828; border: 1px solid #0d2a3e; border-radius: 8px; padding: 20px 24px; }
+.pred-label { font-size: 9px; letter-spacing: 3px; color: #4a7a8a; text-transform: uppercase; margin-bottom: 4px; }
+.pred-sub   { font-size: 10px; color: #4a7a8a; margin-bottom: 16px; }
+.pred-grid  { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+.pred-item  { padding: 12px 14px; background: #040d14; border-radius: 6px; border: 1px solid #0d2a3e; }
+.pred-item-label { font-size: 9px; color: #4a7a8a; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px; }
+.pred-item-value { font-size: 16px; font-weight: bold; font-family: 'Courier New', monospace; }

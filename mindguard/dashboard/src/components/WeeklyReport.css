@@ -1,0 +1,9 @@
+.weekly-card { background: #071828; border: 1px solid #0d2a3e; border-radius: 8px; padding: 20px 24px; grid-column: span 3; }
+.weekly-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; }
+.weekly-label  { font-size: 9px; letter-spacing: 3px; color: #4a7a8a; text-transform: uppercase; margin-bottom: 4px; }
+.weekly-sub    { font-size: 10px; color: #4a7a8a; }
+.weekly-close  { background: transparent; border: 1px solid #0d2a3e; color: #4a7a8a; padding: 4px 10px; border-radius: 4px; cursor: pointer; font-size: 12px; }
+.weekly-close:hover { border-color: #ff2d55; color: #ff2d55; }
+.weekly-insights { display: flex; gap: 24px; margin-top: 16px; padding-top: 14px; border-top: 1px solid #0d2a3e; flex-wrap: wrap; }
+.wi-item { font-size: 11px; color: #4a7a8a; }
+.wi-item strong { color: #c8e8f0; }

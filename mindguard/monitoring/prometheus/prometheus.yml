@@ -1,0 +1,281 @@
+# Prometheus configuration for MindGuard AI monitoring
+# Version: 2.47.0
+
+global:
+  # How frequently to scrape targets
+  scrape_interval: 15s
+  
+  # How frequently to evaluate rules
+  evaluation_interval: 15s
+  
+  # How long to retain data
+  retention: 30d
+  
+  # External labels to add to all time series
+  external_labels:
+    monitor: 'mindguard'
+    environment: 'production'
+
+# Alertmanager configuration
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+          # - alertmanager:9093
+
+# Rule files to load
+rule_files:
+  # - 'alerts.yml'
+  # - 'records.yml'
+
+# Scrape configurations
+scrape_configs:
+  # Scrape Prometheus itself
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+        labels:
+          service: 'prometheus'
+
+  # Scrape MindGuard AI Backend
+  - job_name: 'mindguard-backend'
+    scrape_interval: 10s
+    metrics_path: /metrics
+    static_configs:
+      - targets: ['backend:8000']
+        labels:
+          service: 'backend'
+          component: 'api'
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: instance
+        regex: '(.*):.*'
+        replacement: '${1}'
+
+  # Scrape Node Exporter for system metrics
+  - job_name: 'node'
+    scrape_interval: 30s
+    static_configs:
+      - targets: ['node-exporter:9100']
+        labels:
+          service: 'node'
+
+  # Scrape cAdvisor for container metrics
+  - job_name: 'cadvisor'
+    scrape_interval: 30s
+    static_configs:
+      - targets: ['cadvisor:8080']
+        labels:
+          service: 'cadvisor'
+
+  # Scrape Redis
+  - job_name: 'redis'
+    scrape_interval: 30s
+    static_configs:
+      - targets: ['redis-exporter:9121']
+        labels:
+          service: 'redis'
+
+  # Scrape PostgreSQL
+  - job_name: 'postgresql'
+    scrape_interval: 30s
+    static_configs:
+      - targets: ['postgres-exporter:9187']
+        labels:
+          service: 'postgresql'
+
+  # Scrape Nginx
+  - job_name: 'nginx'
+    scrape_interval: 30s
+    static_configs:
+      - targets: ['nginx-exporter:9113']
+        labels:
+          service: 'nginx'
+
+# Alert rules
+groups:
+  - name: mindguard_alerts
+    interval: 30s
+    rules:
+      # Service down alerts
+      - alert: BackendDown
+        expr: up{job="mindguard-backend"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Backend service is down"
+          description: "Backend has been down for more than 1 minute."
+
+      # High error rate alerts
+      - alert: HighErrorRate
+        expr: |
+          sum(rate(mindguard_errors_total[5m])) 
+          / 
+          sum(rate(mindguard_requests_total[5m])) > 0.05
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High error rate detected"
+          description: "Error rate is {{ $value | humanizePercentage }} for the last 5 minutes"
+
+      # High latency alerts
+      - alert: HighLatency
+        expr: |
+          histogram_quantile(0.95, 
+            sum by(le) (rate(mindguard_request_duration_bucket[5m]))
+          ) > 0.5
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High request latency"
+          description: "95th percentile latency is {{ $value }}s for the last 5 minutes"
+
+      # Low model confidence
+      - alert: LowModelConfidence
+        expr: avg_over_time(mindguard_model_confidence[5m]) < 0.7
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Low model confidence"
+          description: "Model confidence is {{ $value | humanizePercentage }} for the last 5 minutes"
+
+      # High fatigue detected
+      - alert: HighFatigue
+        expr: mindguard_cognitive_fatigue > 0.8
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High fatigue level detected"
+          description: "Fatigue level is {{ $value | humanizePercentage }} for the last 2 minutes"
+
+      # High stress detected
+      - alert: HighStress
+        expr: mindguard_cognitive_stress > 0.75
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High stress level detected"
+          description: "Stress level is {{ $value | humanizePercentage }} for the last 2 minutes"
+
+      # Low attention detected
+      - alert: LowAttention
+        expr: mindguard_cognitive_attention < 0.3
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Low attention level detected"
+          description: "Attention level is {{ $value | humanizePercentage }} for the last 2 minutes"
+
+      # High cognitive load detected
+      - alert: HighCognitiveLoad
+        expr: mindguard_cognitive_load > 0.85
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High cognitive load detected"
+          description: "Cognitive load is {{ $value | humanizePercentage }} for the last 2 minutes"
+
+      # Collector failure alerts
+      - alert: EyeTrackerFailure
+        expr: mindguard_collector_up{collector="eye"} == 0
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Eye tracker collector failed"
+          description: "Eye tracker has been down for more than 1 minute"
+
+      - alert: KeyboardMonitorFailure
+        expr: mindguard_collector_up{collector="keyboard"} == 0
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Keyboard monitor collector failed"
+          description: "Keyboard monitor has been down for more than 1 minute"
+
+      # Resource alerts
+      - alert: HighCPUUsage
+        expr: 100 - (avg by (instance) (rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 80
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High CPU usage"
+          description: "CPU usage is {{ $value }}% for the last 5 minutes"
+
+      - alert: HighMemoryUsage
+        expr: |
+          (node_memory_MemTotal_bytes - node_memory_MemFree_bytes - node_memory_Cached_bytes - node_memory_Buffers_bytes) 
+          / node_memory_MemTotal_bytes * 100 > 90
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High memory usage"
+          description: "Memory usage is {{ $value }}% for the last 5 minutes"
+
+      - alert: DiskSpaceLow
+        expr: (node_filesystem_avail_bytes{mountpoint="/"} / node_filesystem_size_bytes{mountpoint="/"} * 100) < 10
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Low disk space"
+          description: "Disk space is {{ $value }}% free"
+
+# Recording rules for pre-computed metrics
+  - name: mindguard_recording_rules
+    interval: 1m
+    rules:
+      - record: job:mindguard_requests:rate5m
+        expr: sum by (job) (rate(mindguard_requests_total[5m]))
+
+      - record: job:mindguard_errors:rate5m
+        expr: sum by (job) (rate(mindguard_errors_total[5m]))
+
+      - record: job:mindguard_inference_duration:avg5m
+        expr: |
+          sum by (job) (rate(mindguard_inference_duration_sum[5m])) 
+          / 
+          sum by (job) (rate(mindguard_inference_duration_count[5m]))
+
+      - record: instance:node_cpu:avg_rate5m
+        expr: 100 - avg by (instance) (rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100
+
+      - record: instance:node_memory:usage_percent
+        expr: |
+          (node_memory_MemTotal_bytes - node_memory_MemFree_bytes - node_memory_Cached_bytes - node_memory_Buffers_bytes) 
+          / node_memory_MemTotal_bytes * 100
+
+      - record: cognitive:fatigue:avg1h
+        expr: avg_over_time(mindguard_cognitive_fatigue[1h])
+
+      - record: cognitive:stress:avg1h
+        expr: avg_over_time(mindguard_cognitive_stress[1h])
+
+      - record: cognitive:attention:avg1h
+        expr: avg_over_time(mindguard_cognitive_attention[1h])
+
+      - record: cognitive:load:avg1h
+        expr: avg_over_time(mindguard_cognitive_load[1h])
+
+      - record: collector:error_rate
+        expr: |
+          sum by (collector) (rate(mindguard_collector_errors_total[5m])) 
+          / 
+          sum by (collector) (rate(mindguard_collector_samples_total[5m]))
+
+      - record: intervention:success_rate:1d
+        expr: |
+          sum by (type) (mindguard_interventions_total{status="completed"} offset 1d) 
+          / 
+          sum by (type) (mindguard_interventions_total offset 1d)

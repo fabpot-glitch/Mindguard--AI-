@@ -1,0 +1,422 @@
+/* ═══════════════════════════════════════════════════════════
+   LoginPage.css  —  MindGuard AI
+   dashboard/src/pages/LoginPage.css
+═══════════════════════════════════════════════════════════ */
+
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Clash+Display:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* ── ROOT ─────────────────────────────────────────────────── */
+.lp-root {
+  display: flex;
+  min-height: 100vh;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  background: #07090f;
+  color: #e2e8f0;
+}
+
+/* ══════════════════════════════════════════════════════════
+   LEFT PANEL
+══════════════════════════════════════════════════════════ */
+.lp-left {
+  flex: 1;
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  overflow: hidden;
+  background: #07090f;
+}
+
+.neural-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+/* Gradient overlay on canvas */
+.lp-left::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 30% 40%, rgba(0,229,255,0.07) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 80%, rgba(167,139,250,0.08) 0%, transparent 50%),
+    linear-gradient(160deg, #07090f 0%, #0b1020 100%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.lp-left-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 64px 56px;
+  gap: 0;
+  width: 100%;
+}
+
+/* ── BRAND ────────────────────────────────────────────────── */
+.lp-brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 64px;
+}
+
+.lp-brand-icon {
+  width: 46px; height: 46px;
+  border-radius: 13px;
+  background: linear-gradient(135deg, rgba(0,229,255,0.15), rgba(167,139,250,0.1));
+  border: 1px solid rgba(0,229,255,0.25);
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 0 30px rgba(0,229,255,0.2), inset 0 1px 0 rgba(255,255,255,0.08);
+  flex-shrink: 0;
+}
+.lp-brand-icon svg { width: 22px; height: 22px; color: #00e5ff; }
+
+.lp-brand-text { display: flex; flex-direction: column; }
+.lp-brand-name {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 700; font-size: 18px; color: #f0f4ff;
+  letter-spacing: 0.01em;
+}
+.lp-brand-name span { color: #00e5ff; }
+.lp-brand-tagline {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px; color: #2a4a6e;
+  text-transform: uppercase; letter-spacing: 0.2em; margin-top: 2px;
+}
+
+/* ── HEADLINE ─────────────────────────────────────────────── */
+.lp-headline { margin-bottom: 52px; }
+.lp-headline-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px; color: #00e5ff;
+  text-transform: uppercase; letter-spacing: 0.2em;
+  margin-bottom: 16px;
+  display: flex; align-items: center; gap: 10px;
+}
+.lp-headline-label::before {
+  content: '';
+  display: block; width: 24px; height: 1px;
+  background: #00e5ff;
+}
+
+.lp-headline h1 {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 700; font-size: 48px; line-height: 1.1;
+  color: #f0f4ff; letter-spacing: -0.03em;
+  margin-bottom: 18px;
+}
+.lp-headline-accent {
+  background: linear-gradient(90deg, #00e5ff, #a78bfa);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.lp-headline-body {
+  font-size: 14px; color: #4a6a80; line-height: 1.75;
+  max-width: 380px;
+}
+
+/* ── STATS ────────────────────────────────────────────────── */
+.lp-stats {
+  display: flex;
+  gap: 0;
+  margin-bottom: 36px;
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 14px;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+  background: rgba(255,255,255,0.03);
+}
+
+.lp-stat {
+  flex: 1;
+  padding: 18px 16px;
+  text-align: center;
+  border-right: 1px solid rgba(255,255,255,0.07);
+  transition: background 0.2s;
+}
+.lp-stat:last-child { border-right: none; }
+.lp-stat:hover { background: rgba(0,229,255,0.04); }
+
+.lp-stat-val {
+  font-family: 'DM Mono', monospace;
+  font-size: 20px; font-weight: 500; color: #00e5ff;
+  margin-bottom: 4px;
+}
+.lp-stat-label {
+  font-size: 10px; color: #2a4a6e;
+  text-transform: uppercase; letter-spacing: 0.1em;
+}
+
+/* ── BADGES ───────────────────────────────────────────────── */
+.lp-badges { display: flex; gap: 12px; }
+.lp-badge {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 14px; border-radius: 8px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  font-size: 12px; color: #6a8a9e;
+  transition: all 0.2s;
+}
+.lp-badge:hover { background: rgba(0,229,255,0.06); border-color: rgba(0,229,255,0.15); color: #a0c0d0; }
+.lp-badge svg { width: 13px; height: 13px; color: #00e5ff; flex-shrink: 0; }
+
+/* ══════════════════════════════════════════════════════════
+   RIGHT PANEL — FORM
+══════════════════════════════════════════════════════════ */
+.lp-right {
+  width: 500px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 40px;
+  background: #0c1018;
+  border-left: 1px solid rgba(255,255,255,0.06);
+  position: relative;
+}
+
+/* Subtle top accent line */
+.lp-right::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(0,229,255,0.3) 40%, rgba(167,139,250,0.3) 60%, transparent);
+}
+
+.lp-form-box {
+  width: 100%; max-width: 380px;
+  animation: lp-fade-up 0.5s ease both;
+}
+
+@keyframes lp-fade-up {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── FORM HEADER ──────────────────────────────────────────── */
+.lp-form-header { margin-bottom: 36px; }
+
+.lp-form-eyebrow {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px; color: #00e5ff;
+  text-transform: uppercase; letter-spacing: 0.2em;
+  margin-bottom: 10px;
+}
+
+.lp-form-title {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 700; font-size: 26px; color: #f0f4ff;
+  letter-spacing: -0.02em; margin-bottom: 8px;
+}
+
+.lp-form-sub {
+  font-size: 13px; color: #3a5a70; line-height: 1.6;
+}
+
+/* ── FIELDS ───────────────────────────────────────────────── */
+.lp-form { display: flex; flex-direction: column; gap: 16px; }
+
+.lp-field { display: flex; flex-direction: column; gap: 8px; }
+
+.lp-label-row {
+  display: flex; justify-content: space-between; align-items: center;
+}
+
+.lp-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px; font-weight: 500; color: #6a8a9e;
+  text-transform: uppercase; letter-spacing: 0.14em;
+}
+
+.lp-forgot {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px; color: #2a4a6e;
+  background: none; border: none; cursor: pointer;
+  transition: color 0.18s; letter-spacing: 0.06em;
+}
+.lp-forgot:hover { color: #00e5ff; }
+
+.lp-input-wrap {
+  position: relative; display: flex; align-items: center;
+}
+
+.lp-input-icon {
+  position: absolute; left: 14px;
+  display: flex; align-items: center; color: #2a4060;
+  pointer-events: none; transition: color 0.2s;
+}
+.lp-input-icon svg { width: 15px; height: 15px; }
+
+.lp-field-focused .lp-input-icon { color: #00e5ff; }
+
+.lp-input {
+  width: 100%;
+  padding: 13px 44px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.09);
+  border-radius: 10px;
+  color: #e2e8f0;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 14px;
+  outline: none;
+  transition: all 0.2s;
+}
+.lp-input::placeholder { color: #1e3040; }
+.lp-input:focus {
+  border-color: rgba(0,229,255,0.4);
+  background: rgba(0,229,255,0.04);
+  box-shadow: 0 0 0 3px rgba(0,229,255,0.08);
+}
+
+.lp-field-error .lp-input {
+  border-color: rgba(255,59,92,0.4);
+  box-shadow: 0 0 0 3px rgba(255,59,92,0.08);
+}
+
+.lp-eye {
+  position: absolute; right: 13px;
+  background: none; border: none; color: #2a4060;
+  cursor: pointer; display: flex; align-items: center;
+  transition: color 0.18s; padding: 0;
+}
+.lp-eye:hover { color: #00e5ff; }
+.lp-eye svg   { width: 15px; height: 15px; }
+
+/* ── ERROR ────────────────────────────────────────────────── */
+.lp-error {
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px 16px; border-radius: 10px;
+  background: rgba(255,59,92,0.08);
+  border: 1px solid rgba(255,59,92,0.25);
+  font-size: 12px; color: #ff6b85; line-height: 1.5;
+}
+.lp-error svg { width: 15px; height: 15px; flex-shrink: 0; }
+
+/* ── SUBMIT ───────────────────────────────────────────────── */
+.lp-submit {
+  width: 100%;
+  display: flex; align-items: center; justify-content: center;
+  gap: 10px;
+  padding: 14px 20px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(0,229,255,0.18), rgba(123,47,255,0.18));
+  border: 1px solid rgba(0,229,255,0.35);
+  color: #00e5ff;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 15px; font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-top: 4px;
+  position: relative;
+  overflow: hidden;
+}
+.lp-submit::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(0,229,255,0.12), rgba(123,47,255,0.12));
+  opacity: 0; transition: opacity 0.2s;
+}
+.lp-submit:hover:not(:disabled)::before { opacity: 1; }
+.lp-submit:hover:not(:disabled) {
+  border-color: rgba(0,229,255,0.6);
+  box-shadow: 0 0 32px rgba(0,229,255,0.2), 0 4px 16px rgba(0,0,0,0.4);
+  transform: translateY(-1px);
+}
+.lp-submit:active:not(:disabled) { transform: translateY(0); }
+.lp-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.lp-submit-text { position: relative; z-index: 1; letter-spacing: 0.01em; }
+
+.lp-spinner {
+  position: relative; z-index: 1;
+  width: 18px; height: 18px; border-radius: 50%;
+  border: 2px solid rgba(0,229,255,0.2);
+  border-top-color: #00e5ff;
+  animation: lp-spin 0.8s linear infinite; flex-shrink: 0;
+}
+@keyframes lp-spin { to { transform: rotate(360deg); } }
+
+/* ── DIVIDER ──────────────────────────────────────────────── */
+.lp-divider {
+  display: flex; align-items: center; gap: 14px;
+  margin: 24px 0 20px;
+}
+.lp-divider::before, .lp-divider::after {
+  content: ''; flex: 1; height: 1px;
+  background: rgba(255,255,255,0.07);
+}
+.lp-divider span {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px; color: #1e3040;
+  text-transform: uppercase; letter-spacing: 0.14em;
+  white-space: nowrap;
+}
+
+/* ── DEMO ACCOUNTS ────────────────────────────────────────── */
+.lp-demo-row {
+  display: flex; flex-direction: column; gap: 8px;
+  margin-bottom: 28px;
+}
+
+.lp-demo-btn {
+  display: flex; align-items: center; gap: 12px;
+  padding: 11px 14px; border-radius: 10px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.07);
+  cursor: pointer; transition: all 0.18s; text-align: left; width: 100%;
+}
+.lp-demo-btn:hover {
+  background: rgba(255,255,255,0.06);
+  border-color: rgba(255,255,255,0.12);
+  transform: translateX(3px);
+}
+
+.lp-demo-avatar {
+  width: 36px; height: 36px; border-radius: 9px;
+  border: 1px solid;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 14px; font-weight: 700; flex-shrink: 0;
+}
+
+.lp-demo-info { display: flex; flex-direction: column; gap: 2px; }
+.lp-demo-name {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 13px; font-weight: 600; color: #b0c4d8;
+}
+.lp-demo-role {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px; color: #2a4060;
+  text-transform: uppercase; letter-spacing: 0.1em;
+}
+
+/* ── SWITCH ───────────────────────────────────────────────── */
+.lp-switch {
+  text-align: center;
+  font-size: 13px; color: #2a4060;
+}
+.lp-switch-link {
+  color: #00e5ff; font-weight: 600;
+  background: none; border: none; cursor: pointer;
+  font-family: inherit; font-size: inherit;
+  transition: color 0.18s;
+}
+.lp-switch-link:hover { color: #a78bfa; }
+
+/* ── RESPONSIVE ───────────────────────────────────────────── */
+@media (max-width: 960px) {
+  .lp-left { display: none; }
+  .lp-right { width: 100%; border-left: none; }
+}
+@media (max-width: 480px) {
+  .lp-right { padding: 32px 24px; }
+}
