@@ -2,46 +2,48 @@ import React, { useState, useEffect } from "react";
 import "./App.css";
 
 // ── AUTH PAGES ────────────────────────────────────────────────
-import LoginPage  from "./pages/LoginPage";
+import LoginPage from "./pages/LoginPage";
 import SignUpPage from "./pages/SignUpPage";
 
 // ── HOOKS ────────────────────────────────────────────────────
-import { useWebSocket }      from "./hooks/useWebSocket";
+import { useWebSocket } from "./hooks/useWebSocket";
 import { useCognitiveState } from "./hooks/useCognitiveState";
-import { useIntervention }   from "./hooks/useIntervention";
-import { useSessionTimer }   from "./hooks/useSessionTimer";
+import { useIntervention } from "./hooks/useIntervention";
+import { useSessionTimer } from "./hooks/useSessionTimer";
 
 // ── COMPONENTS ───────────────────────────────────────────────
-import Header             from "./components/Header";
-import Dashboard          from "./components/Dashboard";
-import CognitiveGauge     from "./components/CognitiveGauge";
-import Timeline           from "./components/Timeline";
-import RadarChart         from "./components/RadarChart";
-import InterventionModal  from "./components/InterventionModal";
-import AlertLog           from "./components/AlertLog";
-import PredictionPanel    from "./components/PredictionPanel";
-import SignalStatus       from "./components/SignalStatus";
-import ModeSelector       from "./components/ModeSelector";
-import BreathingExercise  from "./components/BreathingExercise";
-import SessionTimer       from "./components/SessionTimer";
-import WeeklyReport       from "./components/WeeklyReport";
+import Header from "./components/Header";
+import Dashboard from "./components/Dashboard";
+import CognitiveGauge from "./components/CognitiveGauge";
+import Timeline from "./components/Timeline";
+import RadarChart from "./components/RadarChart";
+import InterventionModal from "./components/InterventionModal";
+import AlertLog from "./components/AlertLog";
+import PredictionPanel from "./components/PredictionPanel";
+import SignalStatus from "./components/SignalStatus";
+import ModeSelector from "./components/ModeSelector";
+import BreathingExercise from "./components/BreathingExercise";
+import SessionTimer from "./components/SessionTimer";
+import WeeklyReport from "./components/WeeklyReport";
 
-// ── CONFIG ────────────────────────────────────────────────────
-const WS_URL  = process.env.REACT_APP_WS_URL  || "ws://localhost:8000/ws";
-const API_URL = process.env.REACT_APP_API_URL || "http://localhost:8000";
+// ── CONFIG (FIXED ✅) ─────────────────────────────────────────
+const API_URL =
+  process.env.REACT_APP_API_URL ||
+  "https://nikhitha-nikhi12-mindguard-backend.hf.space";
+
+const WS_URL =
+  process.env.REACT_APP_WS_URL ||
+  "wss://nikhitha-nikhi12-mindguard-backend.hf.space/ws";
 
 // ══════════════════════════════════════════════════════════════
-// APP ROOT  —  handles auth routing + dashboard
+// APP ROOT
 // ══════════════════════════════════════════════════════════════
 export default function App() {
-
   // ── AUTH STATE ────────────────────────────────────────────
-  // Always start on 'login'. Only move to 'dashboard' after
-  // successful login / signup, or if a valid session exists.
   const [screen, setScreen] = useState("login");
-  const [user,   setUser]   = useState(null);
+  const [user, setUser] = useState(null);
 
-  // On mount: restore session only if mg_user exists in localStorage
+  // Restore session
   useEffect(() => {
     try {
       const stored = localStorage.getItem("mg_user");
@@ -53,13 +55,19 @@ export default function App() {
         }
       }
     } catch {
-      // corrupted storage — clear it and stay on login
       localStorage.removeItem("mg_user");
     }
   }, []);
 
-  const handleLogin  = (account) => { setUser(account); setScreen("dashboard"); };
-  const handleSignUp = (account) => { setUser(account); setScreen("dashboard"); };
+  const handleLogin = (account) => {
+    setUser(account);
+    setScreen("dashboard");
+  };
+
+  const handleSignUp = (account) => {
+    setUser(account);
+    setScreen("dashboard");
+  };
 
   const handleLogout = () => {
     localStorage.removeItem("mg_user");
@@ -68,17 +76,17 @@ export default function App() {
     setScreen("login");
   };
 
-  // ── HOOKS (always called — React rules of hooks) ──────────
-  const { state: rawState, connected }      = useWebSocket(WS_URL);
+  // ── HOOKS ────────────────────────────────────────────────
+  const { state: rawState, connected } = useWebSocket(WS_URL);
   const { cognitiveState, history, alerts } = useCognitiveState(rawState);
-  const { intervention, dismiss }           = useIntervention(cognitiveState);
-  const { sessionTime, resetTimer }         = useSessionTimer();
+  const { intervention, dismiss } = useIntervention(cognitiveState);
+  const { sessionTime, resetTimer } = useSessionTimer();
 
   // ── LOCAL STATE ───────────────────────────────────────────
-  const [mode, setMode]                         = useState("FOCUS");
+  const [mode, setMode] = useState("FOCUS");
   const [showWeeklyReport, setShowWeeklyReport] = useState(false);
 
-  // ── DERIVED RISK LEVEL ────────────────────────────────────
+  // ── RISK LEVEL ────────────────────────────────────────────
   const riskLevel = (() => {
     if (!cognitiveState) return "NOMINAL";
     const { fatigue, stress } = cognitiveState;
@@ -87,19 +95,20 @@ export default function App() {
     return "NOMINAL";
   })();
 
-  // ── SEND MODE CHANGE TO BACKEND ───────────────────────────
+  // ── SEND MODE TO BACKEND ──────────────────────────────────
   useEffect(() => {
     if (screen !== "dashboard") return;
+
     fetch(`${API_URL}/mode`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify({ mode }),
     }).catch(() => {});
   }, [mode, screen]);
 
-  // ══════════════════════════════════════════════════════════
-  // AUTH SCREENS — shown before dashboard
-  // ══════════════════════════════════════════════════════════
+  // ── AUTH SCREENS ──────────────────────────────────────────
   if (screen === "login") {
     return (
       <LoginPage
@@ -118,13 +127,10 @@ export default function App() {
     );
   }
 
-  // ══════════════════════════════════════════════════════════
-  // DASHBOARD (authenticated)
-  // ══════════════════════════════════════════════════════════
+  // ── DASHBOARD ─────────────────────────────────────────────
   return (
     <div className="app-root">
-
-      {/* ── TOP HEADER BAR ─────────────────────────────────── */}
+      {/* HEADER */}
       <Header
         user={user}
         connected={connected}
@@ -137,43 +143,46 @@ export default function App() {
         <SessionTimer sessionTime={sessionTime} onReset={resetTimer} />
       </Header>
 
-      {/* ── MAIN DASHBOARD GRID ────────────────────────────── */}
+      {/* MAIN DASHBOARD */}
       <Dashboard>
-
-        {/* ── ROW 1: 4 COGNITIVE SCORE GAUGES ─────────────── */}
+        {/* ROW 1 */}
         <CognitiveGauge
-          label="COGNITIVE LOAD" icon="🧠"
+          label="COGNITIVE LOAD"
+          icon="🧠"
           value={cognitiveState?.cognitive ?? 0}
           description="Processing capacity"
         />
         <CognitiveGauge
-          label="ATTENTION SCORE" icon="🎯"
+          label="ATTENTION SCORE"
+          icon="🎯"
           value={cognitiveState?.attention ?? 0}
           description="Focus level"
         />
         <CognitiveGauge
-          label="STRESS INDEX" icon="⚡"
+          label="STRESS INDEX"
+          icon="⚡"
           value={cognitiveState?.stress ?? 0}
           description="Cortisol proxy"
           invert
         />
         <CognitiveGauge
-          label="FATIGUE LEVEL" icon="💤"
+          label="FATIGUE LEVEL"
+          icon="💤"
           value={cognitiveState?.fatigue ?? 0}
           description="Neural exhaustion"
           invert
         />
 
-        {/* ── ROW 2: TIMELINE + RADAR ──────────────────────── */}
+        {/* ROW 2 */}
         <Timeline history={history} />
         <RadarChart
           cognitive={cognitiveState?.cognitive ?? 0}
-          attention={cognitiveState?.attention  ?? 0}
-          stress={cognitiveState?.stress    ?? 0}
-          fatigue={cognitiveState?.fatigue  ?? 0}
+          attention={cognitiveState?.attention ?? 0}
+          stress={cognitiveState?.stress ?? 0}
+          fatigue={cognitiveState?.fatigue ?? 0}
         />
 
-        {/* ── ROW 3: PREDICTION / SIGNAL / ALERTS ──────────── */}
+        {/* ROW 3 */}
         <PredictionPanel
           cognitiveState={cognitiveState}
           mode={mode}
@@ -182,19 +191,18 @@ export default function App() {
         <SignalStatus connected={connected} mode={mode} />
         <AlertLog alerts={alerts} />
 
-        {/* ── ROW 4: WEEKLY REPORT (toggled) ───────────────── */}
+        {/* ROW 4 */}
         {showWeeklyReport && (
           <WeeklyReport onClose={() => setShowWeeklyReport(false)} />
         )}
-
       </Dashboard>
 
-      {/* ── BREATHING EXERCISE (BREAK mode) ──────────────────── */}
+      {/* BREAK MODE */}
       {mode === "BREAK" && (
         <BreathingExercise onComplete={() => setMode("FOCUS")} />
       )}
 
-      {/* ── INTERVENTION MODAL ───────────────────────────────── */}
+      {/* INTERVENTION */}
       {intervention && (
         <InterventionModal
           intervention={intervention}
@@ -203,15 +211,14 @@ export default function App() {
         />
       )}
 
-      {/* ── WEEKLY REPORT TOGGLE ─────────────────────────────── */}
+      {/* WEEKLY REPORT BUTTON */}
       <button
         className="weekly-report-btn"
-        onClick={() => setShowWeeklyReport(prev => !prev)}
+        onClick={() => setShowWeeklyReport((prev) => !prev)}
         title="Toggle Weekly Report"
       >
         📊
       </button>
-
     </div>
   );
 }
