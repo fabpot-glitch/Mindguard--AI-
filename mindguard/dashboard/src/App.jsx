@@ -4,6 +4,7 @@ import "./App.css";
 // ── AUTH PAGES ────────────────────────────────────────────────
 import LoginPage from "./pages/LoginPage";
 import SignUpPage from "./pages/SignUpPage";
+import TestPage from "./pages/TestPage";
 
 // ── HOOKS ────────────────────────────────────────────────────
 import { useWebSocket } from "./hooks/useWebSocket";
@@ -46,6 +47,11 @@ console.log('   ENV WS:', process.env.REACT_APP_WS_URL);
 // APP ROOT
 // ══════════════════════════════════════════════════════════════
 export default function App() {
+  // ── TEST PAGE (TEMPORARY) ─────────────────────────────────
+  if (window.location.pathname === '/test') {
+    return <TestPage />;
+  }
+
   // ── AUTH STATE ────────────────────────────────────────────
   const [screen, setScreen] = useState("login");
   const [user, setUser] = useState(null);
