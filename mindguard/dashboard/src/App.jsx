@@ -35,6 +35,13 @@ const WS_URL =
   process.env.REACT_APP_WS_URL ||
   "wss://nikhitha-nikhi12-mindguard-backend.hf.space/ws";
 
+// Debug logging on startup
+console.log('🔍 MindGuard AI - Environment Configuration:');
+console.log('   API_URL:', API_URL);
+console.log('   WS_URL:', WS_URL);
+console.log('   ENV API:', process.env.REACT_APP_API_URL);
+console.log('   ENV WS:', process.env.REACT_APP_WS_URL);
+
 // ══════════════════════════════════════════════════════════════
 // APP ROOT
 // ══════════════════════════════════════════════════════════════
@@ -99,13 +106,32 @@ export default function App() {
   useEffect(() => {
     if (screen !== "dashboard") return;
 
-    fetch(`${API_URL}/mode`, {
+    const modeUrl = `${API_URL}/mode`;
+    console.log('🔵 Sending mode to backend:', modeUrl);
+    console.log('🔵 Mode value:', mode);
+
+    fetch(modeUrl, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ mode }),
-    }).catch(() => {});
+    })
+      .then((res) => {
+        console.log('✅ Mode response status:', res.status);
+        if (!res.ok) {
+          throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+        }
+        return res.json();
+      })
+      .then((data) => {
+        console.log('✅ Mode response data:', data);
+      })
+      .catch((err) => {
+        console.error('❌ Mode fetch error:', err.message);
+        console.error('❌ Full error:', err);
+        console.error('❌ URL attempted:', modeUrl);
+      });
   }, [mode, screen]);
 
   // ── AUTH SCREENS ──────────────────────────────────────────
